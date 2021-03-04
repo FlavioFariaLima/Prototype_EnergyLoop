@@ -71,6 +71,13 @@ public class LevelManager : MonoBehaviour
 		RotateNodes();
 
 		levelSettings.curLinkCount = CheckNodes();
+		CameraFocus();
+	}
+
+	public void CameraFocus()
+	{
+
+		Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.5f, (levelSettings.height / 2) - 1.5f, -12);
 	}
 
 	private void SetAllColor(Color color)
@@ -156,7 +163,7 @@ public class LevelManager : MonoBehaviour
 			}
 		}
 
-		Camera.main.transform.position = new Vector3(levelSettings.width / 2, levelSettings.height / 2, -10);
+		CameraFocus();
 	}
 
 	private int GetLinksRequired()
@@ -317,10 +324,14 @@ public class LevelManager : MonoBehaviour
 
 			yield return null;
 		}
+
+		Manager.GetMainBtn().SetActive(false);
 	}
 
 	public IEnumerator FinishUI()
-	{		
+	{
+		//
+		Handheld.Vibrate();
 
 		float time = 0f;
 		float speed = 0.5f;
@@ -337,17 +348,15 @@ public class LevelManager : MonoBehaviour
 			yield return null;
 		}
 
+		Manager.PlayingLevel++;
+		Manager.SessionScore += (levelSettings.width * levelSettings.height) * 100;
+
+		Manager.CheckScore();
+		Manager.SetupSavedLevels();
+		Manager.MainButtonClick();
+
 		canvas.SetActive(true);
-	}
-
-	private void PauseGame()
-	{
-		Time.timeScale = 0;
-	}
-
-	private void ContinueGame()
-	{
-		Time.timeScale = 1;
+		Manager.GetMainBtn().SetActive(true);
 	}
 
 	// Save and Load Level Methods
@@ -366,7 +375,7 @@ public class LevelManager : MonoBehaviour
 
 		SetNewLevelSize();
 		BuildLevel();
-		Camera.main.transform.position = new Vector3(levelSettings.width / 2, levelSettings.height / 2, -12);
+		CameraFocus();
 
 		levelSettings.totalLinks = GetLinksRequired();
 		RotateNodes();
@@ -377,37 +386,40 @@ public class LevelManager : MonoBehaviour
 
 	public void SetNewLevelSize()
     {
-		levelSettings.width = UnityEngine.Random.Range(2, 7);
-		levelSettings.height = UnityEngine.Random.Range(3, 7);
+		levelSettings.width = UnityEngine.Random.Range(2, 8);
+		levelSettings.height = UnityEngine.Random.Range(3, 14);
 	}
 
 	public void SaveLevelToObject()
 	{
+
+#if UNITY_EDITOR_WIN
 		List<PseudoNode> nodes = new List<PseudoNode>();
 
-		foreach (Node n in levelSettings.nodes)
-		{
-			PseudoNode p = new PseudoNode();
-			p.w = (int)n.transform.position.x;
-			p.h = (int)n.transform.position.y;
-			p.nodeType = n.GetNodeType;
-			p.mainNode = n.MainNode;
-			p.activeSides = n.ActiveSides();
-			p.top = n.top;
-			p.right = n.right;
-			p.bottom = n.bottom;
-			p.left = n.left;
-			p.activeSides = n.activeSides;
-			p.rotationDiff = n.rotationDiff;
+			foreach (Node n in levelSettings.nodes)
+			{
+				PseudoNode p = new PseudoNode();
+				p.w = (int)n.transform.position.x;
+				p.h = (int)n.transform.position.y;
+				p.nodeType = n.GetNodeType;
+				p.mainNode = n.MainNode;
+				p.activeSides = n.ActiveSides();
+				p.top = n.top;
+				p.right = n.right;
+				p.bottom = n.bottom;
+				p.left = n.left;
+				p.activeSides = n.activeSides;
+				p.rotationDiff = n.rotationDiff;
 
-			nodes.Add(p);
-		}
+				nodes.Add(p);
+			}
 
-		Manager.SavedLevels.savedLevels.Add(CreateNewLevel(levelSettings.totalLinks, levelSettings.width, levelSettings.height, nodes));
-		EditorUtility.SetDirty(Manager.SavedLevels);
-		AssetDatabase.SaveAssets();
-		AssetDatabase.Refresh();
-	}
+			Manager.SavedLevels.savedLevels.Add(CreateNewLevel(levelSettings.totalLinks, levelSettings.width, levelSettings.height, nodes));
+            EditorUtility.SetDirty(Manager.SavedLevels);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+#endif
+}
 
 	public void LoadThisLevel(int index)
 	{
@@ -451,23 +463,30 @@ public class LevelManager : MonoBehaviour
 
         levelSettings.totalLinks = GetLinksRequired();
 		RotateNodes();
+		CameraFocus();
 		levelSettings.curLinkCount = CheckNodes();
 	}
 
 	public void RemoveLastSavedLevel()
 	{
+
+#if UNITY_EDITOR_WIN
 		Manager.SavedLevels.savedLevels.RemoveAt(Manager.SavedLevels.savedLevels.Count - 1);
-		EditorUtility.SetDirty(Manager.SavedLevels);
-		AssetDatabase.SaveAssets();
-		AssetDatabase.Refresh();
+		
+            EditorUtility.SetDirty(Manager.SavedLevels);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+#endif
 	}
 
 	public void CleanSavedLevelList()
 	{
+#if UNITY_EDITOR_WIN
 		Manager.SavedLevels.savedLevels.Clear();
-		EditorUtility.SetDirty(Manager.SavedLevels);
-		AssetDatabase.SaveAssets();
-		AssetDatabase.Refresh();
+            EditorUtility.SetDirty(Manager.SavedLevels);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();       
+#endif
 	}
 
 	public PseudoLevel CreateNewLevel(int t, int w, int h, List<PseudoNode> n)

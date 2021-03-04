@@ -9,7 +9,10 @@ public class GameManager : MonoBehaviour
 {
     [Header("Menus Settings")]
     [SerializeField] private GameObject menu;
+    [SerializeField] private GameObject menuBtn;
     [SerializeField] private GameObject secretMenu;
+    [SerializeField] private GameObject mainBtn;
+    [SerializeField] private GameObject score;
     [SerializeField] private bool secretMenuOn;
     [SerializeField] private LevelsBag levelsBag;
     public LevelsBag SavedLevels
@@ -29,7 +32,22 @@ public class GameManager : MonoBehaviour
     [Header("Misc")]
     [SerializeField] private Material bkgMaterial;
     private int sessionScore = 0;
+    public int SessionScore
+    {
+        get { return sessionScore; }
+        set { sessionScore = value; }
+    }
     private int playingLevel = 0;
+    public int PlayingLevel
+    {
+        get { return playingLevel; }
+        set { playingLevel = value; }
+    }
+
+    public GameObject GetMainBtn()
+    {
+        return mainBtn;
+    }
 
     private void Awake()
     {
@@ -60,7 +78,7 @@ public class GameManager : MonoBehaviour
         return bkgMaterial;
     }
 
-    private IEnumerator LerpObject()
+    private IEnumerator LerpMenu()
     {
         float timeOfTravel = 0.15f;
         float currentTime = 0;
@@ -89,7 +107,7 @@ public class GameManager : MonoBehaviour
 
     public void ShowMenu()
     {
-        StartCoroutine(LerpObject());
+        StartCoroutine(LerpMenu());
     }
 
     public void ShowSelectLevelPanel()
@@ -125,6 +143,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void MainButtonClick()
+    {
+        mainBtn.GetComponent<Button>().onClick.RemoveAllListeners();
+        mainBtn.GetComponent<Button>().onClick.AddListener(delegate { levelManager.LoadThisLevel(PlayerPrefs.GetInt("BestLevel")); });
+    }
+
     public void LoadSelectedLevel(int index)
     {
         levelManager.LoadThisLevel(index);
@@ -133,23 +157,21 @@ public class GameManager : MonoBehaviour
 
     public void CheckScore()
     {
-        if (PlayerPrefs.HasKey("PlayerScore"))
-        {
-            int tempScore = PlayerPrefs.GetInt("PlayerScore") + sessionScore;
-            PlayerPrefs.SetInt("PlayerScore", tempScore);
-        }
-        else
-            PlayerPrefs.SetInt("PlayerScore", sessionScore);
-
+        // Check Level Progress
         if (PlayerPrefs.HasKey("BestLevel"))
         {
-            if ( PlayerPrefs.GetInt("BestLevel") < playingLevel);
-                PlayerPrefs.SetInt("BestLevel", playingLevel);
+            if (PlayerPrefs.GetInt("BestLevel") < playingLevel);
+            PlayerPrefs.SetInt("BestLevel", playingLevel);
         }
         else
         {
             PlayerPrefs.SetInt("BestLevel", playingLevel);
         }
-    }
 
+        // Check Score
+        int tempScore = PlayerPrefs.GetInt("PlayerScore") + sessionScore;
+        PlayerPrefs.SetInt("PlayerScore", tempScore);
+
+        score.GetComponent<Text>().text = $"{PlayerPrefs.GetInt("PlayerScore")}";
+    }
 }
