@@ -126,3 +126,5 @@ MonoBehaviour:
   right: 1
   bottom: 1
   left: 1
+  activeSides: 
+  rotationDiff: 0
