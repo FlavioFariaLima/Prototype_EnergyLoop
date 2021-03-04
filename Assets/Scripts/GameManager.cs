@@ -13,9 +13,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject advertisingPanel;
     [SerializeField] private GameObject mainBtn;
     [SerializeField] public GameObject score;
+    [SerializeField] private LevelsBag levelsBag;
     [SerializeField] private GameObject secretMenu;
     [SerializeField] private bool secretMenuOn;
-    [SerializeField] private LevelsBag levelsBag;
+
     public LevelsBag SavedLevels
     {
         get { return levelsBag; }
@@ -23,14 +24,17 @@ public class GameManager : MonoBehaviour
     }
 
     [Header("Audio Settings")]
-    private AudioSource mainAudioSource;
     [SerializeField] public AudioClip audioMenuClick;
     [SerializeField] public AudioClip audioNodeClick;
+    [SerializeField] public AudioClip audioVictory;
+    [SerializeField] public AudioClip audioScore;
     [SerializeField] public Sprite muteSprite;
     [SerializeField] public Sprite unmuteSprite;
+    private AudioSource mainAudioSource;
 
     [Header("Sub-Menus Panels")]
     [SerializeField] private GameObject selectLevelPanel;
+    [SerializeField] public ParticleSystem particles;
 
     [HideInInspector] public LevelManager levelManager;
     private Vector2 originalMenuPosition;
@@ -78,14 +82,17 @@ public class GameManager : MonoBehaviour
 
         // Setup Positions
         originalMenuPosition = menu.GetComponent<RectTransform>().anchoredPosition;
-        endMenuPosition = new Vector2(0, originalMenuPosition.y + menu.GetComponent<RectTransform>().rect.height);
+        endMenuPosition = new Vector2(0, (originalMenuPosition.y + menu.GetComponent<RectTransform>().rect.height) + 30);
 
         SetupSavedLevels();
+
+        // Force Portrait Orientation
+        Screen.orientation = ScreenOrientation.Portrait;
     }
 
     public void MuteAudio()
     {
-        StartCoroutine(PlaySound(audioMenuClick));
+        StartCoroutine(PlaySound(audioMenuClick, 0.1f)); ;
         mainAudioSource.mute = !mainAudioSource.mute;
 
         if (mainAudioSource.mute)
@@ -94,8 +101,9 @@ public class GameManager : MonoBehaviour
             menu.transform.Find("Sound").GetComponent<Image>().sprite = unmuteSprite;
     }
 
-    public IEnumerator PlaySound(AudioClip clip)
+    public IEnumerator PlaySound(AudioClip clip, float volume)
     {
+        mainAudioSource.volume = volume;
         mainAudioSource.clip = clip;
         mainAudioSource.Play();
         yield return new WaitForSeconds(clip.length);
@@ -106,6 +114,7 @@ public class GameManager : MonoBehaviour
         return bkgMaterial;
     }
 
+    // Open Main Menu
     private IEnumerator LerpMenu()
     {
         float timeOfTravel = 0.15f;
@@ -120,33 +129,47 @@ public class GameManager : MonoBehaviour
             if (!isOpen)
             {
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(originalMenuPosition, endMenuPosition, normalizedValue);
+                Camera.main.orthographicSize = Mathf.Lerp(8.5f, 12, 8.5f);
             }
             else
             {
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(endMenuPosition, originalMenuPosition, normalizedValue);
+                Camera.main.orthographicSize = Mathf.Lerp(12, 8.5f, 12);
             }
 
             yield return null;
         }
 
         isOpen = !isOpen;
-    }
 
+        if (isOpen)
+        {
+            StartCoroutine(PlaySound(audioMenuClick, 0.1f));
+            menu.transform.Find("ClickOut").gameObject.SetActive(true);
+        }
+        else
+        {
+            menu.transform.Find("ClickOut").gameObject.SetActive(false);
+        }
+
+        levelManager.CameraFocus();
+    }
+        
     public void ShowMenu()
     {
-        StartCoroutine(PlaySound(audioMenuClick));
         StartCoroutine(LerpMenu());
     }
 
     public void ShowAdvertisingPanel()
     {
-        StartCoroutine(PlaySound(audioMenuClick));
+        StartCoroutine(PlaySound(audioMenuClick, 0.1f));
         advertisingPanel.SetActive(!advertisingPanel.activeSelf);
     }
 
+    // Select Level to Play
     public void ShowSelectLevelPanel()
     {
-        StartCoroutine(PlaySound(audioMenuClick));
+        StartCoroutine(PlaySound(audioMenuClick, 0.1f));
         selectLevelPanel.SetActive(!selectLevelPanel.activeSelf);
     }
 
@@ -183,12 +206,12 @@ public class GameManager : MonoBehaviour
     public void MainButtonClick()
     {
         mainBtn.GetComponent<Button>().onClick.RemoveAllListeners();
-        mainBtn.GetComponent<Button>().onClick.AddListener(delegate { levelManager.LoadThisLevel(PlayerPrefs.GetInt("BestLevel")); });
+        mainBtn.GetComponent<Button>().onClick.AddListener(delegate { levelManager.LoadThisLevel(playingLevel); });
     }
 
     public void LoadSelectedLevel(int index)
     {
-        StartCoroutine(PlaySound(audioMenuClick));
+        StartCoroutine(PlaySound(audioMenuClick, 0.1f));
         levelManager.LoadThisLevel(index);
         ShowSelectLevelPanel();
     }
@@ -213,6 +236,13 @@ public class GameManager : MonoBehaviour
         score.GetComponent<Text>().text = $"{PlayerPrefs.GetInt("PlayerScore")}";
     }
 
+    public void CleanCanvas()
+    {
+        if (isOpen)
+            ShowMenu();
+    }
+
+    // Score Scale
     public IEnumerator ScaleOverSeconds(GameObject objectToScale, Vector3 scaleTo, float seconds)
     {
         float elapsedTime = 0;
@@ -227,7 +257,9 @@ public class GameManager : MonoBehaviour
         }
         objectToScale.transform.position = scaleTo;
 
+        StartCoroutine(PlaySound(audioScore, 0.1f));
         elapsedTime = 0;
+
         while (elapsedTime < seconds)
         {
             objectToScale.transform.localScale = Vector3.Lerp(scaleTo, startingScale, (elapsedTime / seconds));

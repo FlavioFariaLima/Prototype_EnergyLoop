@@ -70,6 +70,8 @@ public class Node : MonoBehaviour
 		activeSides[1] = right ? 1 : 0;
 		activeSides[2] = bottom ? 1 : 0;
 		activeSides[3] = left ? 1 : 0;
+
+		GetComponent<BoxCollider2D>().enabled = true;
 	}
 
 	// Update is called once per frame
@@ -83,7 +85,7 @@ public class Node : MonoBehaviour
 
 	void OnMouseDown()
 	{
-		StartCoroutine(levelManager.Manager.PlaySound(levelManager.Manager.audioNodeClick));
+		StartCoroutine(levelManager.Manager.PlaySound(levelManager.Manager.audioNodeClick, 0.1f));
 
 		int difference = -levelManager.CheckNode((int)transform.position.x, (int)transform.position.y);
 
@@ -94,7 +96,20 @@ public class Node : MonoBehaviour
 		levelManager.GetCurrentLevel().curLinkCount += difference;
 
 		if (levelManager.GetCurrentLevel().curLinkCount == levelManager.GetCurrentLevel().totalLinks)
-			StartCoroutine(levelManager.FinishUI());
+			StartCoroutine(AllNodesAreGoodToGo());
+	}
+
+	private IEnumerator AllNodesAreGoodToGo()
+	{
+		foreach (Node n in levelManager.LevelSettings.nodes)
+        {
+			n.GetComponent<BoxCollider2D>().enabled = false;
+		}
+
+		yield return new WaitForSeconds(0.5f);
+
+		StartCoroutine(levelManager.Manager.PlaySound(levelManager.Manager.audioVictory, 0.1f));
+		StartCoroutine(levelManager.FinishUI());
 	}
 
 	public void RotateNode()

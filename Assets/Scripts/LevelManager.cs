@@ -31,6 +31,7 @@ public class LevelManager : MonoBehaviour
 
 	public GameManager Manager;
 	private bool hasMainNode;
+	private bool playingRandom = false;
 
 	// Use this for initialization
 	private void Awake()
@@ -46,11 +47,15 @@ public class LevelManager : MonoBehaviour
 		{
 			if (levelSettings.width == 0 || levelSettings.height == 0)
 			{
-				Debug.LogError("Need to define a width and height for Auto Level Build!");
-				Debug.Break();
-			}
+				Debug.Log(" 0,0 Mean we want to start the app in the sequence levels");
+				LoadThisLevel(PlayerPrefs.GetInt("BestLevel"));
 
-			BuildLevel();
+			}
+			else
+			{
+				Debug.Log(" 0,0 Mean we want to start the app with a randon level");
+				BuildLevel();
+			}
 		}
 		else
 		{
@@ -66,18 +71,21 @@ public class LevelManager : MonoBehaviour
 			}
 		}
 
-		levelSettings.totalLinks = GetLinksRequired();
+		if (levelSettings.width != 0 && levelSettings.height != 0)
+		{
+			levelSettings.totalLinks = GetLinksRequired();
 
-		RotateNodes();
+			RotateNodes();
 
-		levelSettings.curLinkCount = CheckNodes();
-		CameraFocus();
+			levelSettings.curLinkCount = CheckNodes();
+			CameraFocus();
+		}
 	}
 
 	public void CameraFocus()
 	{
 
-		Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.5f, (levelSettings.height / 2) - 1.5f, -12);
+		Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.2f, (levelSettings.height / 2) - 1.5f, -10);
 	}
 
 	private void SetAllColor(Color color)
@@ -85,7 +93,6 @@ public class LevelManager : MonoBehaviour
 		foreach (Node node in levelSettings.nodes)
 		{
 			node.GetComponent<SpriteRenderer>().color = color;
-			Debug.Log($" Change Color: {node.gameObject.name}");
 		}
 	}
 
@@ -295,8 +302,8 @@ public class LevelManager : MonoBehaviour
 
 	public IEnumerator TurnLight(bool value)
     {
-		float minLuminosity = 1; 
-		float maxLuminosity = 3;
+		float minLuminosity = .5f; 
+		float maxLuminosity = 1.5f;
 		float duration = 1;
 
 		float counter = 0f;
@@ -314,6 +321,16 @@ public class LevelManager : MonoBehaviour
 			b = minLuminosity;
 			endLevel.SetActive(false);
 			Manager.GetBkgMaterial().color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+
+			var col = Manager.particles.colorOverLifetime;
+			col.enabled = true;
+
+			Gradient grad = new Gradient();
+			grad.SetKeys(new GradientColorKey[] { new GradientColorKey(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.1f, 1f), 0.0f), 
+												  new GradientColorKey(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.1f, 1f), 1.0f) }, 
+												  new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 1.0f), new GradientAlphaKey(1.0f, 1.0f) });
+
+			col.color = grad;
 		}
 
 		while (counter < duration)
@@ -357,14 +374,18 @@ public class LevelManager : MonoBehaviour
 		Manager.SetupSavedLevels();
 		Manager.MainButtonClick();
 
+		// Show UI
+		if (!playingRandom)
+			Manager.GetMainBtn().SetActive(true);
+
 		endLevel.SetActive(true);
-		Manager.GetMainBtn().SetActive(true);
 	}
 
 	// Save and Load Level Methods
 	public void BuildTotalRandomLevel()
 	{
-		StartCoroutine(Manager.PlaySound(Manager.audioMenuClick));
+		playingRandom = true;
+		StartCoroutine(Manager.PlaySound(Manager.audioMenuClick, 0.1f));
 
 		StartCoroutine(TurnLight(false));
 
@@ -378,19 +399,19 @@ public class LevelManager : MonoBehaviour
 
 		SetNewLevelSize();
 		BuildLevel();
-		CameraFocus();
 
 		levelSettings.totalLinks = GetLinksRequired();
 		RotateNodes();
 		levelSettings.curLinkCount = CheckNodes();
 
+		CameraFocus();
 		endLevel.SetActive(false);
 	}
 
 	public void SetNewLevelSize()
     {
-		levelSettings.width = UnityEngine.Random.Range(2, 8);
-		levelSettings.height = UnityEngine.Random.Range(3, 16);
+		levelSettings.width = UnityEngine.Random.Range(2, 7);
+		levelSettings.height = UnityEngine.Random.Range(3, 13);
 	}
 
 	public void SaveLevelToObject()
@@ -426,6 +447,18 @@ public class LevelManager : MonoBehaviour
 
 	public void LoadThisLevel(int index)
 	{
+		try
+		{
+			StartCoroutine(Manager.PlaySound(Manager.audioMenuClick, 0.1f));
+		}
+        catch (Exception ex)
+		{
+			
+		}
+
+
+		Manager.PlayingLevel = index;
+		playingRandom = false;
 		StartCoroutine(TurnLight(false));
 
 		foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Node"))
