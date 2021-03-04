@@ -83,6 +83,8 @@ public class Node : MonoBehaviour
 
 	void OnMouseDown()
 	{
+		StartCoroutine(levelManager.Manager.PlaySound(levelManager.Manager.audioNodeClick));
+
 		int difference = -levelManager.CheckNode((int)transform.position.x, (int)transform.position.y);
 
 		RotateNode();

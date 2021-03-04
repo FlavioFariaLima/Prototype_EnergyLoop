@@ -10,9 +10,10 @@ public class GameManager : MonoBehaviour
     [Header("Menus Settings")]
     [SerializeField] private GameObject menu;
     [SerializeField] private GameObject menuBtn;
-    [SerializeField] private GameObject secretMenu;
+    [SerializeField] private GameObject advertisingPanel;
     [SerializeField] private GameObject mainBtn;
-    [SerializeField] private GameObject score;
+    [SerializeField] public GameObject score;
+    [SerializeField] private GameObject secretMenu;
     [SerializeField] private bool secretMenuOn;
     [SerializeField] private LevelsBag levelsBag;
     public LevelsBag SavedLevels
@@ -20,6 +21,13 @@ public class GameManager : MonoBehaviour
         get { return levelsBag; }
         set { levelsBag = value; }
     }
+
+    [Header("Audio Settings")]
+    private AudioSource mainAudioSource;
+    [SerializeField] public AudioClip audioMenuClick;
+    [SerializeField] public AudioClip audioNodeClick;
+    [SerializeField] public Sprite muteSprite;
+    [SerializeField] public Sprite unmuteSprite;
 
     [Header("Sub-Menus Panels")]
     [SerializeField] private GameObject selectLevelPanel;
@@ -52,6 +60,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         levelManager = GetComponent<LevelManager>();
+        mainAudioSource = GetComponent<AudioSource>();
+        //PlayerPrefs.DeleteAll();
     }
 
     // Start is called before the first frame update
@@ -71,6 +81,24 @@ public class GameManager : MonoBehaviour
         endMenuPosition = new Vector2(0, originalMenuPosition.y + menu.GetComponent<RectTransform>().rect.height);
 
         SetupSavedLevels();
+    }
+
+    public void MuteAudio()
+    {
+        StartCoroutine(PlaySound(audioMenuClick));
+        mainAudioSource.mute = !mainAudioSource.mute;
+
+        if (mainAudioSource.mute)
+            menu.transform.Find("Sound").GetComponent<Image>().sprite = muteSprite;
+        else
+            menu.transform.Find("Sound").GetComponent<Image>().sprite = unmuteSprite;
+    }
+
+    public IEnumerator PlaySound(AudioClip clip)
+    {
+        mainAudioSource.clip = clip;
+        mainAudioSource.Play();
+        yield return new WaitForSeconds(clip.length);
     }
 
     public Material GetBkgMaterial()
@@ -98,7 +126,6 @@ public class GameManager : MonoBehaviour
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(endMenuPosition, originalMenuPosition, normalizedValue);
             }
 
-
             yield return null;
         }
 
@@ -107,11 +134,19 @@ public class GameManager : MonoBehaviour
 
     public void ShowMenu()
     {
+        StartCoroutine(PlaySound(audioMenuClick));
         StartCoroutine(LerpMenu());
+    }
+
+    public void ShowAdvertisingPanel()
+    {
+        StartCoroutine(PlaySound(audioMenuClick));
+        advertisingPanel.SetActive(!advertisingPanel.activeSelf);
     }
 
     public void ShowSelectLevelPanel()
     {
+        StartCoroutine(PlaySound(audioMenuClick));
         selectLevelPanel.SetActive(!selectLevelPanel.activeSelf);
     }
 
@@ -120,7 +155,9 @@ public class GameManager : MonoBehaviour
         int bestLevel = 0;
 
         if (PlayerPrefs.HasKey("BestLevel"))
+        {
             bestLevel = PlayerPrefs.GetInt("BestLevel");
+        }
         else
             PlayerPrefs.SetInt("BestLevel", bestLevel);
 
@@ -151,6 +188,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadSelectedLevel(int index)
     {
+        StartCoroutine(PlaySound(audioMenuClick));
         levelManager.LoadThisLevel(index);
         ShowSelectLevelPanel();
     }
@@ -160,8 +198,8 @@ public class GameManager : MonoBehaviour
         // Check Level Progress
         if (PlayerPrefs.HasKey("BestLevel"))
         {
-            if (PlayerPrefs.GetInt("BestLevel") < playingLevel);
-            PlayerPrefs.SetInt("BestLevel", playingLevel);
+            if (PlayerPrefs.GetInt("BestLevel") < playingLevel)
+                PlayerPrefs.SetInt("BestLevel", playingLevel);
         }
         else
         {
@@ -173,5 +211,30 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("PlayerScore", tempScore);
 
         score.GetComponent<Text>().text = $"{PlayerPrefs.GetInt("PlayerScore")}";
+    }
+
+    public IEnumerator ScaleOverSeconds(GameObject objectToScale, Vector3 scaleTo, float seconds)
+    {
+        float elapsedTime = 0;
+        Vector3 startingScale = objectToScale.transform.localScale;
+        Vector3 startPost = objectToScale.transform.position;
+
+        while (elapsedTime < seconds)
+        {
+            objectToScale.transform.localScale = Vector3.Lerp(startingScale, scaleTo, (elapsedTime / seconds));
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        objectToScale.transform.position = scaleTo;
+
+        elapsedTime = 0;
+        while (elapsedTime < seconds)
+        {
+            objectToScale.transform.localScale = Vector3.Lerp(scaleTo, startingScale, (elapsedTime / seconds));
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        objectToScale.transform.position = startPost;
+
     }
 }

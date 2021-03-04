@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class LevelManager : MonoBehaviour
 {
 	[Header("Objects Settings")]
-	[SerializeField] private GameObject canvas;
+	[SerializeField] private GameObject endLevel;
 	[SerializeField] private Light mainlight;
 	[SerializeField] private Transform nodesParent;
 	[SerializeField] private Sprite defaultNodeSprite;
@@ -29,7 +29,7 @@ public class LevelManager : MonoBehaviour
 	[SerializeField] private int maxEndLineNodes;
 	[HideInInspector] public bool playAgain = false;
 
-	private GameManager Manager;
+	public GameManager Manager;
 	private bool hasMainNode;
 
 	// Use this for initialization
@@ -39,7 +39,7 @@ public class LevelManager : MonoBehaviour
 
 		// Set Visual 
 		SetDefaultNodestColor(defaultNodeColor);
-		canvas.SetActive(false);
+		endLevel.SetActive(false);
 
 		// Check if We area Building Levels
 		if (BuildRandomLevel)
@@ -312,9 +312,9 @@ public class LevelManager : MonoBehaviour
 		{
 			a = maxLuminosity;
 			b = minLuminosity;
+			endLevel.SetActive(false);
+			Manager.GetBkgMaterial().color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
 		}
-
-		float currentIntensity = mainlight.intensity;
 
 		while (counter < duration)
 		{
@@ -348,6 +348,8 @@ public class LevelManager : MonoBehaviour
 			yield return null;
 		}
 
+		StartCoroutine(Manager.ScaleOverSeconds(Manager.score, new Vector3(3, 3, 3), .5f));
+
 		Manager.PlayingLevel++;
 		Manager.SessionScore += (levelSettings.width * levelSettings.height) * 100;
 
@@ -355,15 +357,16 @@ public class LevelManager : MonoBehaviour
 		Manager.SetupSavedLevels();
 		Manager.MainButtonClick();
 
-		canvas.SetActive(true);
+		endLevel.SetActive(true);
 		Manager.GetMainBtn().SetActive(true);
 	}
 
 	// Save and Load Level Methods
 	public void BuildTotalRandomLevel()
 	{
+		StartCoroutine(Manager.PlaySound(Manager.audioMenuClick));
+
 		StartCoroutine(TurnLight(false));
-		Manager.GetBkgMaterial().color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
 
 		foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Node"))
         {
@@ -381,13 +384,13 @@ public class LevelManager : MonoBehaviour
 		RotateNodes();
 		levelSettings.curLinkCount = CheckNodes();
 
-		canvas.SetActive(false);
+		endLevel.SetActive(false);
 	}
 
 	public void SetNewLevelSize()
     {
 		levelSettings.width = UnityEngine.Random.Range(2, 8);
-		levelSettings.height = UnityEngine.Random.Range(3, 14);
+		levelSettings.height = UnityEngine.Random.Range(3, 16);
 	}
 
 	public void SaveLevelToObject()
