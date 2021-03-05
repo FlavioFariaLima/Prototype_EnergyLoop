@@ -300,6 +300,7 @@ public class LevelManager : MonoBehaviour
 		return value;
 	}
 
+	// Deal with Light
 	public IEnumerator TurnLight(bool value)
     {
 		float minLuminosity = .5f; 
@@ -345,6 +346,7 @@ public class LevelManager : MonoBehaviour
 		Manager.GetMainBtn().SetActive(false);
 	}
 
+	// Call Victory UI
 	public IEnumerator FinishUI()
 	{
 		//

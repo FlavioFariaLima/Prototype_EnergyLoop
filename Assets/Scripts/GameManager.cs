@@ -103,10 +103,13 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator PlaySound(AudioClip clip, float volume)
     {
-        mainAudioSource.volume = volume;
-        mainAudioSource.clip = clip;
-        mainAudioSource.Play();
-        yield return new WaitForSeconds(clip.length);
+        if (mainAudioSource)
+        {
+            mainAudioSource.volume = volume;
+            mainAudioSource.clip = clip;
+            mainAudioSource.Play();
+            yield return new WaitForSeconds(clip.length);
+        }
     }
 
     public Material GetBkgMaterial()
@@ -145,11 +148,11 @@ public class GameManager : MonoBehaviour
         if (isOpen)
         {
             StartCoroutine(PlaySound(audioMenuClick, 0.1f));
-            menu.transform.Find("ClickOut").gameObject.SetActive(true);
+            //menu.transform.Find("ClickOut").gameObject.SetActive(true);
         }
         else
         {
-            menu.transform.Find("ClickOut").gameObject.SetActive(false);
+            //menu.transform.Find("ClickOut").gameObject.SetActive(false);
         }
 
         levelManager.CameraFocus();

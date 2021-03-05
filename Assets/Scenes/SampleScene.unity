@@ -1426,7 +1426,7 @@ MonoBehaviour:
   secretMenu: {fileID: 1281226465}
   secretMenuOn: 0
   audioMenuClick: {fileID: 8300000, guid: 53948ac7cc0b4814192ee9ace9cb36ca, type: 3}
-  audioNodeClick: {fileID: 8300000, guid: 48c5771094e5c80459f59d1527d7db86, type: 3}
+  audioNodeClick: {fileID: 8300000, guid: a90ceee60676bed4cb1fad8d88f8717f, type: 3}
   audioVictory: {fileID: 8300000, guid: e4995145705d0d04cbf15b69ceb04c54, type: 3}
   audioScore: {fileID: 8300000, guid: 92fcf51cb65cf7840b27d0c6b62e3eeb, type: 3}
   muteSprite: {fileID: 21300000, guid: a9a5b4b5b7fdbf746b698b63643841ac, type: 3}
@@ -3257,7 +3257,7 @@ RectTransform:
   m_Children:
   - {fileID: 2067289347}
   m_Father: {fileID: 1707112131}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -4923,8 +4923,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1265758283}
   - {fileID: 1751602948}
+  - {fileID: 1265758283}
   m_Father: {fileID: 894779744}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9951,12 +9951,12 @@ RectTransform:
   m_Children:
   - {fileID: 694524493}
   m_Father: {fileID: 1707112131}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -7.5}
-  m_SizeDelta: {x: 0, y: -494.46594}
+  m_AnchoredPosition: {x: 0, y: 0.0017700195}
+  m_SizeDelta: {x: 0, y: 0.0034179688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1751602949
 MonoBehaviour:
