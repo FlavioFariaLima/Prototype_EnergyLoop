@@ -22,10 +22,10 @@ public class LevelManager : MonoBehaviour
 	[SerializeField] private bool BuildRandomLevel;
 	[SerializeField] private Level levelSettings;
 	public Level LevelSettings
-    {
+	{
 		get { return levelSettings; }
 		set { levelSettings = value; }
-    }
+	}
 	[SerializeField] private int maxEndLineNodes;
 	[HideInInspector] public bool playAgain = false;
 
@@ -33,10 +33,17 @@ public class LevelManager : MonoBehaviour
 	private bool hasMainNode;
 	private bool playingRandom = false;
 
+
+	[SerializeField] BlockManager blockManager;
+
+
 	// Use this for initialization
 	private void Awake()
 	{
 		Manager = GetComponent<GameManager>();
+		blockManager = GetComponent<BlockManager>();
+
+		print(blockManager);
 
 		// Set Visual 
 		SetDefaultNodestColor(defaultNodeColor);
@@ -48,7 +55,8 @@ public class LevelManager : MonoBehaviour
 			if (levelSettings.width == 0 || levelSettings.height == 0)
 			{
 				Debug.Log(" 0,0 Mean we want to start the app in the sequence levels");
-				LoadThisLevel(PlayerPrefs.GetInt("BestLevel"));
+				//LoadThisLevel(PlayerPrefs.GetInt("BestLevel"));
+				LoadThisLevel(3);
 
 			}
 			else
@@ -80,12 +88,13 @@ public class LevelManager : MonoBehaviour
 			levelSettings.curLinkCount = CheckNodes();
 			CameraFocus();
 		}
+
+
 	}
 
 	public void CameraFocus()
 	{
-
-		Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.2f, (levelSettings.height / 2) - 1.5f, -10);
+		Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.2f, (levelSettings.height / 2) - 0.5f, -3);
 	}
 
 	private void SetAllColor(Color color)
@@ -97,13 +106,13 @@ public class LevelManager : MonoBehaviour
 	}
 
 	private void SetDefaultNodestColor(Color color)
-    {
-		foreach(GameObject node in nodesPrefabs)
-        {
+	{
+		foreach (GameObject node in nodesPrefabs)
+		{
 			node.GetComponent<SpriteRenderer>().color = color;
 			//Debug.Log($" Change Color: {node.gameObject.name}");
 		}
-    }
+	}
 
 	private void BuildLevel()
 	{
@@ -144,11 +153,14 @@ public class LevelManager : MonoBehaviour
 				if (nodeType == 2 && auxSides[0] != auxSides[2])
 					nodeType = 5;
 
+
 				// Instantiate Node and set rotation
 				GameObject newNode = Instantiate(nodesPrefabs[nodeType], new Vector3(w, h, 0), Quaternion.identity);
 				newNode.GetComponent<Node>().GetNodeType = nodeType;
 
-				while (newNode.GetComponent<Node>().ActiveSides()[0] != auxSides[0] || newNode.GetComponent<Node>().ActiveSides()[1] != auxSides[1] 
+				newNode.GetComponent<Node>().newNodeType = nodeType;
+
+				while (newNode.GetComponent<Node>().ActiveSides()[0] != auxSides[0] || newNode.GetComponent<Node>().ActiveSides()[1] != auxSides[1]
 					|| newNode.GetComponent<Node>().ActiveSides()[2] != auxSides[2] || newNode.GetComponent<Node>().ActiveSides()[3] != auxSides[3])
 				{
 					newNode.GetComponent<Node>().RotateNode();
@@ -161,7 +173,7 @@ public class LevelManager : MonoBehaviour
 						+ newNode.GetComponent<Node>().ActiveSides()[3];
 
 				if (!hasMainNode && newNodeType == 1)
-                {
+				{
 					newNode.GetComponent<Node>().SetMainNode(true);
 					hasMainNode = true;
 				}
@@ -171,7 +183,12 @@ public class LevelManager : MonoBehaviour
 		}
 
 		CameraFocus();
+
+
+		blockManager.Build3dLevel();
+
 	}
+
 
 	private int GetLinksRequired()
 	{
@@ -239,7 +256,7 @@ public class LevelManager : MonoBehaviour
 	}
 
 	public Sprite GetMainNodeSprite()
-    {
+	{
 		return mainNodeSprite;
 	}
 
@@ -254,13 +271,17 @@ public class LevelManager : MonoBehaviour
 				if (h != levelSettings.height - 1)
 				{
 					if (levelSettings.nodes[w, h].ActiveSides()[0] == 1 && levelSettings.nodes[w, h + 1].ActiveSides()[2] == 1)
+					{
 						value++;
+					}
 				}
 
 				{
 					if (w != levelSettings.width - 1)
 						if (levelSettings.nodes[w, h].ActiveSides()[1] == 1 && levelSettings.nodes[w + 1, h].ActiveSides()[3] == 1)
+						{
 							value++;
+						}
 				}
 			}
 		}
@@ -276,25 +297,33 @@ public class LevelManager : MonoBehaviour
 		if (h != levelSettings.height - 1)
 		{
 			if (levelSettings.nodes[w, h].ActiveSides()[0] == 1 && levelSettings.nodes[w, h + 1].ActiveSides()[2] == 1)
+			{
 				value++;
+			}
 		}
 
 		if (w != levelSettings.width - 1)
 		{
 			if (levelSettings.nodes[w, h].ActiveSides()[1] == 1 && levelSettings.nodes[w + 1, h].ActiveSides()[3] == 1)
+			{
 				value++;
+			}
 		}
 
 		if (w != 0)
 		{
 			if (levelSettings.nodes[w, h].ActiveSides()[3] == 1 && levelSettings.nodes[w - 1, h].ActiveSides()[1] == 1)
+			{
 				value++;
+			}
 		}
 
 		if (h != 0)
 		{
 			if (levelSettings.nodes[w, h].ActiveSides()[2] == 1 && levelSettings.nodes[w, h - 1].ActiveSides()[0] == 1)
+			{
 				value++;
+			}
 		}
 
 		return value;
@@ -302,8 +331,8 @@ public class LevelManager : MonoBehaviour
 
 	// Deal with Light
 	public IEnumerator TurnLight(bool value)
-    {
-		float minLuminosity = .5f; 
+	{
+		float minLuminosity = .5f;
 		float maxLuminosity = 1.5f;
 		float duration = 1;
 
@@ -327,8 +356,8 @@ public class LevelManager : MonoBehaviour
 			col.enabled = true;
 
 			Gradient grad = new Gradient();
-			grad.SetKeys(new GradientColorKey[] { new GradientColorKey(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.1f, 1f), 0.0f), 
-												  new GradientColorKey(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.1f, 1f), 1.0f) }, 
+			grad.SetKeys(new GradientColorKey[] { new GradientColorKey(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.1f, 1f), 0.0f),
+												  new GradientColorKey(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.1f, 1f), 1.0f) },
 												  new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 1.0f), new GradientAlphaKey(1.0f, 1.0f) });
 
 			col.color = grad;
@@ -392,9 +421,9 @@ public class LevelManager : MonoBehaviour
 		StartCoroutine(TurnLight(false));
 
 		foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Node"))
-        {
+		{
 			Destroy(obj);
-        }
+		}
 
 		levelSettings.nodes = new Node[levelSettings.width, levelSettings.height];
 		playAgain = true;
@@ -411,7 +440,7 @@ public class LevelManager : MonoBehaviour
 	}
 
 	public void SetNewLevelSize()
-    {
+	{
 		levelSettings.width = UnityEngine.Random.Range(2, 7);
 		levelSettings.height = UnityEngine.Random.Range(3, 13);
 	}
@@ -422,40 +451,41 @@ public class LevelManager : MonoBehaviour
 #if UNITY_EDITOR_WIN
 		List<PseudoNode> nodes = new List<PseudoNode>();
 
-			foreach (Node n in levelSettings.nodes)
-			{
-				PseudoNode p = new PseudoNode();
-				p.w = (int)n.transform.position.x;
-				p.h = (int)n.transform.position.y;
-				p.nodeType = n.GetNodeType;
-				p.mainNode = n.MainNode;
-				p.activeSides = n.ActiveSides();
-				p.top = n.top;
-				p.right = n.right;
-				p.bottom = n.bottom;
-				p.left = n.left;
-				p.activeSides = n.activeSides;
-				p.rotationDiff = n.rotationDiff;
+		foreach (Node n in levelSettings.nodes)
+		{
+			PseudoNode p = new PseudoNode();
+			p.w = (int)n.transform.position.x;
+			p.h = (int)n.transform.position.y;
+			p.nodeType = n.GetNodeType;
+			p.mainNode = n.MainNode;
+			p.activeSides = n.ActiveSides();
+			p.top = n.top;
+			p.right = n.right;
+			p.bottom = n.bottom;
+			p.left = n.left;
+			p.activeSides = n.activeSides;
+			p.rotationDiff = n.rotationDiff;
 
-				nodes.Add(p);
-			}
+			nodes.Add(p);
+		}
 
-			Manager.SavedLevels.savedLevels.Add(CreateNewLevel(levelSettings.totalLinks, levelSettings.width, levelSettings.height, nodes));
-            EditorUtility.SetDirty(Manager.SavedLevels);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+		Manager.SavedLevels.savedLevels.Add(CreateNewLevel(levelSettings.totalLinks, levelSettings.width, levelSettings.height, nodes));
+		EditorUtility.SetDirty(Manager.SavedLevels);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
 #endif
-}
+	}
 
 	public void LoadThisLevel(int index)
 	{
+
 		try
 		{
 			StartCoroutine(Manager.PlaySound(Manager.audioMenuClick, 0.1f));
 		}
-        catch (Exception ex)
+		catch (Exception ex)
 		{
-			
+
 		}
 
 
@@ -475,6 +505,7 @@ public class LevelManager : MonoBehaviour
 		newLevel.height = Manager.SavedLevels.savedLevels[index].height;
 		newLevel.nodes = new Node[newLevel.width, newLevel.height];
 
+
 		foreach (PseudoNode p in Manager.SavedLevels.savedLevels[index].nodes)
 		{
 			GameObject newNode = Instantiate(nodesPrefabs[p.nodeType], new Vector3(p.w, p.h, 0), Quaternion.identity);
@@ -491,18 +522,25 @@ public class LevelManager : MonoBehaviour
 			if (nodeType == 2 && n.ActiveSides()[0] != n.ActiveSides()[2])
 				nodeType = 5;
 
+			n.newNodeType = nodeType;
+
 			newNode.GetComponent<SpriteRenderer>().sprite = nodesPrefabs[nodeType].GetComponent<SpriteRenderer>().sprite;
 			newLevel.nodes[p.w, p.h] = n;
+
 		}
 
 
 		playAgain = true;
 		levelSettings = newLevel;
 
-        levelSettings.totalLinks = GetLinksRequired();
+		levelSettings.totalLinks = GetLinksRequired();
 		RotateNodes();
 		CameraFocus();
 		levelSettings.curLinkCount = CheckNodes();
+
+
+		blockManager.Build3dLevel();
+
 	}
 
 	public void RemoveLastSavedLevel()
@@ -510,10 +548,10 @@ public class LevelManager : MonoBehaviour
 
 #if UNITY_EDITOR_WIN
 		Manager.SavedLevels.savedLevels.RemoveAt(Manager.SavedLevels.savedLevels.Count - 1);
-		
-            EditorUtility.SetDirty(Manager.SavedLevels);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+
+		EditorUtility.SetDirty(Manager.SavedLevels);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
 #endif
 	}
 
@@ -521,9 +559,9 @@ public class LevelManager : MonoBehaviour
 	{
 #if UNITY_EDITOR_WIN
 		Manager.SavedLevels.savedLevels.Clear();
-            EditorUtility.SetDirty(Manager.SavedLevels);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();       
+		EditorUtility.SetDirty(Manager.SavedLevels);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
 #endif
 	}
 

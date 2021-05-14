@@ -17,43 +17,49 @@ public class Node : MonoBehaviour
 	[SerializeField] public bool bottom = false;
 	[SerializeField] public bool left = false;
 
-	[HideInInspector] public int[] activeSides;
+	[SerializeField] public int[] activeSides;
 	[HideInInspector] public float rotationDiff;
+
+	//--
+	public int newNodeType;
+
+	[SerializeField] public BlockManager blockManager;
+
 
 	// Public Methods
 	public int GetNodeType
-    {
+	{
 		get { return nodeType; }
 		set { nodeType = value; }
-    }
+	}
 
 	public bool MainNode
-    {
-        get { return mainNode; }
-    }
-		
+	{
+		get { return mainNode; }
+	}
+
 	public bool SetMainNode(bool value)
-    {
+	{
 		bool r = false;
 
 		mainNode = value;
 
 		if (mainNode)
-        {
+		{
 			GetComponent<SpriteRenderer>().sprite = levelManager.GetMainNodeSprite();
-        }
+		}
 		else
-        {
+		{
 			GetComponent<SpriteRenderer>().sprite = levelManager.GetDefaultNodeSprite();
 		}
 
 		return r;
-    }
+	}
 
 	public int[] ActiveSides()
-    {
+	{
 		return activeSides;
-    }	
+	}
 
 	// Use this for initialization
 	void Awake()
@@ -72,6 +78,22 @@ public class Node : MonoBehaviour
 		activeSides[3] = left ? 1 : 0;
 
 		GetComponent<BoxCollider2D>().enabled = true;
+
+
+		//block logic
+		blockManager = GameObject.Find("Global").GetComponent<BlockManager>();
+		Invoke("BlockStartAnim", .4f);
+
+	}
+
+	//block logic
+	void BlockStartAnim()
+	{
+		//if(transform.childCount > 0)
+		//transform.GetChild(0).GetComponent<Block>().Check();
+
+		if (transform.childCount > 0)
+			blockManager.CheckAll();
 	}
 
 	// Update is called once per frame
@@ -95,6 +117,10 @@ public class Node : MonoBehaviour
 
 		levelManager.GetCurrentLevel().curLinkCount += difference;
 
+		//block logic
+		transform.GetChild(0).GetComponent<Block>().Check();
+		blockManager.CheckAllSequence();
+
 		if (levelManager.GetCurrentLevel().curLinkCount == levelManager.GetCurrentLevel().totalLinks)
 			StartCoroutine(AllNodesAreGoodToGo());
 	}
@@ -102,7 +128,7 @@ public class Node : MonoBehaviour
 	private IEnumerator AllNodesAreGoodToGo()
 	{
 		foreach (Node n in levelManager.LevelSettings.nodes)
-        {
+		{
 			n.GetComponent<BoxCollider2D>().enabled = false;
 		}
 
@@ -132,4 +158,5 @@ public class Node : MonoBehaviour
 		}
 		activeSides[3] = aux;
 	}
+
 }

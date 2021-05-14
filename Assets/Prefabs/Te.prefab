@@ -128,3 +128,5 @@ MonoBehaviour:
   left: 0
   activeSides: 
   rotationDiff: 0
+  newNodeType: 0
+  blockManager: {fileID: 0}

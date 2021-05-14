@@ -132,12 +132,12 @@ public class GameManager : MonoBehaviour
             if (!isOpen)
             {
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(originalMenuPosition, endMenuPosition, normalizedValue);
-                Camera.main.orthographicSize = Mathf.Lerp(8.5f, 12, 8.5f);
+                Camera.main.orthographicSize = Mathf.Lerp(8.5f, 7, 8.5f);
             }
             else
             {
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(endMenuPosition, originalMenuPosition, normalizedValue);
-                Camera.main.orthographicSize = Mathf.Lerp(12, 8.5f, 12);
+                Camera.main.orthographicSize = Mathf.Lerp(12, 6f, 12);
             }
 
             yield return null;
@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
 
         levelManager.CameraFocus();
     }
-        
+
     public void ShowMenu()
     {
         StartCoroutine(LerpMenu());
@@ -214,6 +214,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadSelectedLevel(int index)
     {
+
         StartCoroutine(PlaySound(audioMenuClick, 0.1f));
         levelManager.LoadThisLevel(index);
         ShowSelectLevelPanel();

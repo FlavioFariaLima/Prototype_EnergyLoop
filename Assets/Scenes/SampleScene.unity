@@ -1346,6 +1346,7 @@ GameObject:
   - component: {fileID: 578103941}
   - component: {fileID: 578103940}
   - component: {fileID: 578103942}
+  - component: {fileID: 578103943}
   m_Layer: 0
   m_Name: Global
   m_TagString: Untagged
@@ -1405,6 +1406,7 @@ MonoBehaviour:
   maxEndLineNodes: 0
   playAgain: 0
   Manager: {fileID: 0}
+  blockManager: {fileID: 578103943}
 --- !u!114 &578103941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1531,6 +1533,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &578103943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 578103938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f6a3eb654fe4e488af0ab498b25a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelManager: {fileID: 578103940}
+  blockList: []
+  blockSequence: []
 --- !u!1 &609484382
 GameObject:
   m_ObjectHideFlags: 0
