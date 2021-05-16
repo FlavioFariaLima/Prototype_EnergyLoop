@@ -129,6 +129,7 @@ public class GameManager : MonoBehaviour
             currentTime += Time.deltaTime;
             normalizedValue = currentTime / timeOfTravel;
 
+
             if (!isOpen)
             {
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(originalMenuPosition, endMenuPosition, normalizedValue);

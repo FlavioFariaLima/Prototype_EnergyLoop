@@ -105,7 +105,15 @@ public class BlockManager : MonoBehaviour
 
 			//ivy3dObject = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
 		}
+		else if (newNodeType == 4)
+		{
+			block3d = Resources.Load<GameObject>("CrossBlock3d");
 
+			block3d.transform.localScale = new Vector3(50, 50, 50);
+			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
+
+			//ivy3dObject = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
+		}
 
 
 		if (block3d != null)

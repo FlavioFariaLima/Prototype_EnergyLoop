@@ -72,7 +72,7 @@ public class Block : MonoBehaviour
 	{
 		if(neighborsBlocks.Count <= 0)
         {
-			DestroyIvy();
+			//DestroyIvy();
 		}
 	}
 
@@ -297,9 +297,12 @@ public class Block : MonoBehaviour
 	}
 
 	private void DestroyIvy()
-    {
+	{
+		ivy3dObject.GetComponent<IvyController>().PlayParticles();
+
 		ivy3dObject.GetComponent<IvyController>().ResetVars();
 		blockManager.blockSequence.Remove(transform.parent.gameObject);
+
 	}
 
 	public void ResetVars()

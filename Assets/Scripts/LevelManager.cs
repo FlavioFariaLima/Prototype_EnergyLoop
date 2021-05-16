@@ -56,7 +56,7 @@ public class LevelManager : MonoBehaviour
 			{
 				Debug.Log(" 0,0 Mean we want to start the app in the sequence levels");
 				//LoadThisLevel(PlayerPrefs.GetInt("BestLevel"));
-				LoadThisLevel(3);
+				LoadThisLevel(4);
 
 			}
 			else
@@ -96,6 +96,7 @@ public class LevelManager : MonoBehaviour
 	{
 		Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.2f, (levelSettings.height / 2) - 0.5f, -3);
 	}
+
 
 	private void SetAllColor(Color color)
 	{
