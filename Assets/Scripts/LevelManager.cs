@@ -56,7 +56,7 @@ public class LevelManager : MonoBehaviour
 			{
 				Debug.Log(" 0,0 Mean we want to start the app in the sequence levels");
 				//LoadThisLevel(PlayerPrefs.GetInt("BestLevel"));
-				LoadThisLevel(4);
+				LoadThisLevel(5);
 
 			}
 			else

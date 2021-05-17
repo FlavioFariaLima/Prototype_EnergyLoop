@@ -10,7 +10,8 @@ public class Block : MonoBehaviour
 
 	[SerializeField] public BlockManager blockManager;
 
-    public GameObject ivy3dObject;
+    public GameObject ivyLeafsObject;
+	public GameObject ivyStickObject;
 
 	public List<GameObject> neighborsBlocks = new List<GameObject>();
 
@@ -29,7 +30,7 @@ public class Block : MonoBehaviour
 
 		blockManager = GameObject.Find("Global").GetComponent<BlockManager>();
 
-		ivy3dObject = transform.GetChild(0).GetChild(0).gameObject;
+		//ivy3dObject = transform.GetChild(0).GetChild(0).gameObject;
 
 		CheckNode((int)transform.parent.transform.position.x, (int)transform.parent.transform.position.y);
 
@@ -37,7 +38,8 @@ public class Block : MonoBehaviour
 
 	public void StartIvyIncrease()
     {
-		ivy3dObject.GetComponent<IvyController>().PlayIvyAnim(true);
+		ivyLeafsObject.GetComponent<IvyController>().PlayIvyAnim(true);
+		ivyStickObject.GetComponent<IvyController>().PlayIvyAnim(true);
 	}
 
 	public void Check()
@@ -298,9 +300,13 @@ public class Block : MonoBehaviour
 
 	private void DestroyIvy()
 	{
-		ivy3dObject.GetComponent<IvyController>().PlayParticles();
+		ivyLeafsObject.GetComponent<IvyController>().PlayParticles();
 
-		ivy3dObject.GetComponent<IvyController>().ResetVars();
+		ivyLeafsObject.GetComponent<IvyController>().ResetVars();
+
+		//ivyStickObject.GetComponent<IvyController>().PlayParticles();
+		ivyStickObject.GetComponent<IvyController>().ResetVars();
+
 		blockManager.blockSequence.Remove(transform.parent.gameObject);
 
 	}

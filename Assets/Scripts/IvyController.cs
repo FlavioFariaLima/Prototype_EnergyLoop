@@ -21,30 +21,42 @@ public class IvyController : MonoBehaviour
 
     [SerializeField] float windBendStrengt;
 
-    [SerializeField] float windBendStrengtMax;
+    private float windBendStrengtMax;
 
 
     public bool increaseWind = false;
 
+    public bool leafsBool;
+
+
     void Start()
     {
+        windBendStrengtMax = 0.6f;
+
         rend = GetComponent<MeshRenderer>();
 
         growValue = rend.material.GetFloat("Vector1_386C6BEE");
 
         leafsParticles = Resources.Load<ParticleSystem>("LeafsParticles");
+
+        windBendStrengt = 0;
+
     }
 
     public void PlayIvyAnim(bool play)
     {
         playAnim = play;
+        if(leafsBool)
+        print("why");
+        //windBendStrengt = 0;
     }
 
     public void ResetVars()
     {
+        growValue = 0;
         GetComponent<Renderer>().material = growMat;
         rend.material.SetFloat("Vector1_386C6BEE", -0.086f);
-        growValue = rend.material.GetFloat("Vector1_386C6BEE");
+        //growValue = rend.material.GetFloat("Vector1_386C6BEE");
         aux = false;
         playAnim = false;
 
@@ -57,7 +69,7 @@ public class IvyController : MonoBehaviour
         Vector3 spawnPos = new Vector3(transform.parent.parent.transform.position.x, transform.parent.parent.transform.position.y, transform.parent.parent.transform.position.z - 0.2f);
 
         if(growValue > .4)
-        Instantiate(leafsParticles, spawnPos, transform.rotation * Quaternion.Euler(169f, 0, 0f));
+        Instantiate(leafsParticles, spawnPos, transform.parent.parent.rotation * Quaternion.Euler(169f, 0, 0f));
 
     }
 
@@ -77,18 +89,24 @@ public class IvyController : MonoBehaviour
             }
             else
             {
-               // increaseWind = true;
-                //GetComponent<Renderer>().material = windMat;
+                if(leafsBool)
+                {
+                    increaseWind = true;
+                    GetComponent<Renderer>().material = windMat;
+                    windBendStrengt = 0.6f;
+                    rend.material.SetFloat("Vector1_A3ACDC04", windBendStrengt);
+                }
+
                 playAnim = false;
             }
 
         }
-                else if(increaseWind == true)
+        else if(increaseWind == true)
         {
             if(windBendStrengt <= windBendStrengtMax)
             {
-                windBendStrengt += 3f * Time.deltaTime;
-                rend.material.SetFloat("Vector1_693BBF99", windBendStrengt);
+                windBendStrengt += 0.1f * Time.deltaTime;
+                rend.material.SetFloat("Vector1_A3ACDC04", windBendStrengt);
             }
         }
     }

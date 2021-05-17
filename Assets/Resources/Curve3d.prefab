@@ -47,6 +47,8 @@ MonoBehaviour:
   id: 0
   levelManager: {fileID: 0}
   blockManager: {fileID: 0}
+  ivy3dObject: {fileID: 0}
+  neighborsBlocks: []
 --- !u!1 &4235315140253180229
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,3 +228,7 @@ MonoBehaviour:
   growValue: 0
   playAnim: 0
   growMat: {fileID: 2100000, guid: 7f5621d211a291842b3e13ef6e5a7c09, type: 2}
+  windMat: {fileID: 0}
+  windBendStrengt: 0
+  windBendStrengtMax: 0
+  increaseWind: 0

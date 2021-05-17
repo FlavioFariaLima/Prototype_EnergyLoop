@@ -119,6 +119,8 @@ public class Node : MonoBehaviour
 
 		//block logic
 		transform.GetChild(0).GetComponent<Block>().Check();
+		//transform.GetChild(0).GetComponent<Block>().ivyLeafsObject.GetComponent<IvyController>().ResetVars();
+
 		blockManager.CheckAllSequence();
 
 		if (levelManager.GetCurrentLevel().curLinkCount == levelManager.GetCurrentLevel().totalLinks)

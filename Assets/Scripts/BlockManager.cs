@@ -72,7 +72,7 @@ public class BlockManager : MonoBehaviour
 
 		if (newNodeType == 5)//corner
 		{
-			block3d = Resources.Load<GameObject>("Curve3d");
+			block3d = Resources.Load<GameObject>("BlockCurve");
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
 
@@ -80,7 +80,7 @@ public class BlockManager : MonoBehaviour
 		}
 		else if (newNodeType == 1)
 		{
-			block3d = Resources.Load<GameObject>("Start3d");
+			block3d = Resources.Load<GameObject>("BlockStart");
 
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
@@ -89,7 +89,7 @@ public class BlockManager : MonoBehaviour
 		}
 		else if (newNodeType == 2)
 		{
-			block3d = Resources.Load<GameObject>("Straight3d");
+			block3d = Resources.Load<GameObject>("BlockStraight");
 
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
@@ -98,7 +98,7 @@ public class BlockManager : MonoBehaviour
 		}
 		else if (newNodeType == 3)
 		{
-			block3d = Resources.Load<GameObject>("T3d");
+			block3d = Resources.Load<GameObject>("BlockT");
 
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
@@ -107,7 +107,7 @@ public class BlockManager : MonoBehaviour
 		}
 		else if (newNodeType == 4)
 		{
-			block3d = Resources.Load<GameObject>("CrossBlock3d");
+			block3d = Resources.Load<GameObject>("BlockCross");
 
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
