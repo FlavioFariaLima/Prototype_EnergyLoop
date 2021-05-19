@@ -46,9 +46,6 @@ public class IvyController : MonoBehaviour
     public void PlayIvyAnim(bool play)
     {
         playAnim = play;
-        if(leafsBool)
-        print("why");
-        //windBendStrengt = 0;
     }
 
     public void ResetVars()
@@ -66,10 +63,14 @@ public class IvyController : MonoBehaviour
 
     public void PlayParticles()
     {
-        Vector3 spawnPos = new Vector3(transform.parent.parent.transform.position.x, transform.parent.parent.transform.position.y, transform.parent.parent.transform.position.z - 0.2f);
+        if (leafsBool)
+        {
+            Vector3 spawnPos = new Vector3(transform.parent.parent.transform.position.x, transform.parent.parent.transform.position.y, transform.parent.parent.transform.position.z - 0.2f);
 
-        if(growValue > .4)
-        Instantiate(leafsParticles, spawnPos, transform.parent.parent.rotation * Quaternion.Euler(169f, 0, 0f));
+            if (growValue > .4)
+                Instantiate(leafsParticles, spawnPos, transform.parent.parent.rotation * Quaternion.Euler(169f, 0, 0f));
+        }
+
 
     }
 

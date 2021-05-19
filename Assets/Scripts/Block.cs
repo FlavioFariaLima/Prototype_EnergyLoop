@@ -15,6 +15,8 @@ public class Block : MonoBehaviour
 
 	public List<GameObject> neighborsBlocks = new List<GameObject>();
 
+	Material m_Material;
+
 	public void SetId(int _id)
     {
         id = _id;
@@ -24,7 +26,14 @@ public class Block : MonoBehaviour
         return id;
     }
 
-    void Start()
+	public void SetColor(float value)
+	{
+		m_Material = transform.GetChild(0).GetComponent<Renderer>().material;
+
+		m_Material.color = new Color(value, value, value, 1);
+	}
+
+	void Start()
 	{
 		levelManager = GameObject.Find("Global").GetComponent<LevelManager>();
 
@@ -33,6 +42,7 @@ public class Block : MonoBehaviour
 		//ivy3dObject = transform.GetChild(0).GetChild(0).gameObject;
 
 		CheckNode((int)transform.parent.transform.position.x, (int)transform.parent.transform.position.y);
+
 
 	}
 

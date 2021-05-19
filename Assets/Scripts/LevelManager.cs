@@ -10,6 +10,8 @@ public class LevelManager : MonoBehaviour
 	[Header("Objects Settings")]
 	[SerializeField] private GameObject endLevel;
 	[SerializeField] private Light mainlight;
+	[SerializeField] private SpriteRenderer sunbean;
+
 	[SerializeField] private Transform nodesParent;
 	[SerializeField] private Sprite defaultNodeSprite;
 	[SerializeField] private Color defaultNodeColor;
@@ -337,17 +339,25 @@ public class LevelManager : MonoBehaviour
 
 		float counter = 0f;
 
-		float a, b;
+		float a, b, c, d;
+
+		float sunbeamMin = .05f;
+		float sunbeamMax = .1f;
 
 		if (value)
 		{
 			a = minLuminosity;
 			b = maxLuminosity;
+			c = sunbeamMin;
+			d = sunbeamMax;
+
 		}
 		else
 		{
 			a = maxLuminosity;
 			b = minLuminosity;
+			c = sunbeamMax;
+			d = sunbeamMin;
 			endLevel.SetActive(false);
 			Manager.GetBkgMaterial().color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
 
@@ -360,6 +370,8 @@ public class LevelManager : MonoBehaviour
 												  new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 1.0f), new GradientAlphaKey(1.0f, 1.0f) });
 
 			col.color = grad;
+
+			RenderSettings.fogColor = Manager.GetBkgMaterial().color;
 		}
 
 		while (counter < duration)
@@ -367,6 +379,8 @@ public class LevelManager : MonoBehaviour
 			counter += Time.deltaTime;
 
 			mainlight.intensity = Mathf.Lerp(a, b, counter / duration);
+
+			sunbean.color = new Color(1, 1, 1, Mathf.Lerp(c, d, counter / duration));
 
 			yield return null;
 		}

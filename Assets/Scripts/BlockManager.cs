@@ -18,11 +18,6 @@ public class BlockManager : MonoBehaviour
         }
     }
 
-	void Start()
-	{
-
-	}
-
 	public void PlaySqIvyAnim()
     {
         for (int i = 0; i < blockSequence.Count; i++)
@@ -42,7 +37,22 @@ public class BlockManager : MonoBehaviour
 		}
 
 		SetBlocksIds();
+
+		BlocksColor();
 	}
+
+	private void BlocksColor()
+    {
+		float randGreyValue;
+
+        for (int i = 0; i < blockList.Count; i++)
+        {
+			randGreyValue = Random.RandomRange(0.4f, 0.55f);
+			if (blockList[i].transform.GetChild(0) != null)
+			blockList[i].GetComponent<Block>().SetColor(randGreyValue);
+
+		}
+    }
 
 	public void Create3dBlock(int newNodeType, Transform parent)
 	{
@@ -56,7 +66,6 @@ public class BlockManager : MonoBehaviour
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
 
-			//ivy3dObject = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
 		}
 		else if (newNodeType == 1)
 		{
@@ -64,8 +73,6 @@ public class BlockManager : MonoBehaviour
 
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
-
-			//ivy3dObject = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
 		}
 		else if (newNodeType == 2)
 		{
@@ -74,7 +81,6 @@ public class BlockManager : MonoBehaviour
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
 
-			//ivy3dObject = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
 		}
 		else if (newNodeType == 3)
 		{
@@ -82,8 +88,6 @@ public class BlockManager : MonoBehaviour
 
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
-
-			//ivy3dObject = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
 		}
 		else if (newNodeType == 4)
 		{
@@ -91,8 +95,6 @@ public class BlockManager : MonoBehaviour
 
 			block3d.transform.localScale = new Vector3(50, 50, 50);
 			gameBlock = Instantiate(block3d, parent.transform.position, parent.transform.rotation, parent);
-
-			//ivy3dObject = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
 		}
 
 
@@ -107,17 +109,8 @@ public class BlockManager : MonoBehaviour
 
 	public void ResetAllVars()
     {
-        /*for (int i = 0; i < blockSequence.Count; i++)
-        {
-			blockSequence.RemoveAt(i);
-        }*/
 		blockSequence.Clear();
-		/*for (int i = 0; i < blockList.Count; i++)
-		{
-			blockList.RemoveAt(i);
-		}*/
 
 		blockList.Clear();
-
 	}
 }
