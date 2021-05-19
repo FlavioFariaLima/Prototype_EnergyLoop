@@ -21,26 +21,6 @@ public class BlockManager : MonoBehaviour
 	void Start()
 	{
 
-		//Build3dLevel();
-		//SetBlocksIds();
-	}
-
-	public void CheckAll()
-	{
-		for (int i = 0; i < blockSequence.Count; i++)
-		{
-			blockSequence[i].transform.GetChild(0).GetComponent<Block>().Check();
-			blockSequence[i].transform.GetChild(0).GetComponent<Block>().CheckNeighbors();
-		}
-	}
-
-	public void CheckAllSequence()
-	{
-
-		for (int i = 0; i < blockSequence.Count; i++)
-		{
-			blockSequence[i].transform.GetChild(0).GetComponent<Block>().CheckNeighborsCount();
-		}
 	}
 
 	public void PlaySqIvyAnim()

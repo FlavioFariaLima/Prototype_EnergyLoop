@@ -51,12 +51,9 @@ public class Block : MonoBehaviour
 
 		CheckExNode((int)transform.parent.transform.position.x, (int)transform.parent.transform.position.y);
 
-		blockManager.CheckAllSequence();
-
 
 		PlayIvysSequence();
 
-		//CheckNeighborsCount();
 
 	}
 
@@ -67,14 +64,6 @@ public class Block : MonoBehaviour
 		{
 			neighborsBlocks[i].transform.GetChild(0).GetComponent<Block>().Check();
 		
-		}
-	}
-
-	public void CheckNeighborsCount()
-	{
-		if(neighborsBlocks.Count <= 0)
-        {
-			//DestroyIvy();
 		}
 	}
 
@@ -133,9 +122,20 @@ public class Block : MonoBehaviour
 
 	void PlayIvysSequence()
     {
+
 		blockManager.PlaySqIvyAnim();
+		/*
+		for (int i = 0; i < neighborsBlocks.Count; i++)
+        {
+			neighborsBlocks[i].transform.GetChild(0).GetComponent<Block>().StartIvyIncrease();
+		
+		}*/
 	}
 
+	void PlayIvyAnim()
+	{
+		ivyLeafsObject.GetComponent<IvyController>().PlayIvyAnim(true);
+	}
 
 	public void CheckNode(int w, int h)
 	{
@@ -150,18 +150,11 @@ public class Block : MonoBehaviour
 
 						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h].gameObject);
 
-
-
-
 					}
 					if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h + 1].gameObject) == false)
 					{
 
-
 						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h + 1].gameObject);
-
-
-
 
 					}
 
@@ -180,30 +173,15 @@ public class Block : MonoBehaviour
 		{
 			if (levelManager.LevelSettings.nodes[w, h].ActiveSides()[1] == 1 && levelManager.LevelSettings.nodes[w + 1, h].ActiveSides()[3] == 1)
 			{
-				//if (ivyIsVisible == false)
-                //{
-					if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h].gameObject) == false)
-					{
-						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h].gameObject);
 
-						//blockManager.PlaySqIvyAnim();
-
-					}
-					if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w + 1, h].gameObject) == false)
-					{
-						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w + 1, h].gameObject);
-
-						//blockManager.PlaySqIvyAnim();
-
-					}
-				/*}
-				else
+				if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h].gameObject) == false)
 				{
-					//DestroyIvy();
-
-					//ivyIsVisible = false;
-
-				}*/
+					blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h].gameObject);
+				}
+				if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w + 1, h].gameObject) == false)
+				{
+					blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w + 1, h].gameObject);
+				}
 
 				if (neighborsBlocks.Contains((levelManager.LevelSettings.nodes[w + 1, h].gameObject)) == false)
 					neighborsBlocks.Add(levelManager.LevelSettings.nodes[w + 1, h].gameObject);
@@ -219,30 +197,17 @@ public class Block : MonoBehaviour
 		{
 			if (levelManager.LevelSettings.nodes[w, h].ActiveSides()[3] == 1 && levelManager.LevelSettings.nodes[w - 1, h].ActiveSides()[1] == 1)
 			{
-				//if (ivyIsVisible == false)
-                //{
-					if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h].gameObject) == false)
-					{
-						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h].gameObject);
 
-						//blockManager.PlaySqIvyAnim();
-
-					}
-					if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w - 1, h].gameObject) == false)
-					{
-						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w - 1, h].gameObject);
-
-						//blockManager.PlaySqIvyAnim();
-
-					}
-				//}
-				/*else
+				if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h].gameObject) == false)
 				{
-					//DestroyIvy();
+					blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h].gameObject);
 
-					//ivyIsVisible = false;
+				}
+				if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w - 1, h].gameObject) == false)
+				{
+					blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w - 1, h].gameObject);
 
-				}*/
+				}
 
 
 				if (neighborsBlocks.Contains((levelManager.LevelSettings.nodes[w - 1, h].gameObject)) == false)
@@ -259,30 +224,15 @@ public class Block : MonoBehaviour
 		{
 			if (levelManager.LevelSettings.nodes[w, h].ActiveSides()[2] == 1 && levelManager.LevelSettings.nodes[w, h - 1].ActiveSides()[0] == 1)
 			{
-				//if (ivyIsVisible == false)
-                //{
-					if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h].gameObject) == false)
-					{
-						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h].gameObject);
-
-						blockManager.PlaySqIvyAnim();
-
-					}
-					if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h - 1].gameObject) == false)
-					{
-						blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h - 1].gameObject);
-
-						blockManager.PlaySqIvyAnim();
-
-					}
-				/*}
-				else
+				if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h].gameObject) == false)
 				{
-					//DestroyIvy();
+					blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h].gameObject);
+				}
+				if (blockManager.blockSequence.Contains(levelManager.LevelSettings.nodes[w, h - 1].gameObject) == false)
+				{
+					blockManager.blockSequence.Add(levelManager.LevelSettings.nodes[w, h - 1].gameObject);
 
-					//ivyIsVisible = false;
-
-				}*/
+				}
 
 
 				if (neighborsBlocks.Contains((levelManager.LevelSettings.nodes[w, h - 1].gameObject)) == false)

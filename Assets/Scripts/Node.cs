@@ -93,7 +93,8 @@ public class Node : MonoBehaviour
 		//transform.GetChild(0).GetComponent<Block>().Check();
 
 		if (transform.childCount > 0)
-			blockManager.CheckAll();
+			blockManager.PlaySqIvyAnim();
+			//blockManager.CheckAll();
 	}
 
 	// Update is called once per frame
@@ -121,7 +122,7 @@ public class Node : MonoBehaviour
 		transform.GetChild(0).GetComponent<Block>().Check();
 		//transform.GetChild(0).GetComponent<Block>().ivyLeafsObject.GetComponent<IvyController>().ResetVars();
 
-		blockManager.CheckAllSequence();
+		//blockManager.CheckAllSequence();
 
 		if (levelManager.GetCurrentLevel().curLinkCount == levelManager.GetCurrentLevel().totalLinks)
 			StartCoroutine(AllNodesAreGoodToGo());

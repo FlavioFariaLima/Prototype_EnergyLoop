@@ -43,8 +43,6 @@ public class LevelManager : MonoBehaviour
 		Manager = GetComponent<GameManager>();
 		blockManager = GetComponent<BlockManager>();
 
-		print(blockManager);
-
 		// Set Visual 
 		SetDefaultNodestColor(defaultNodeColor);
 		endLevel.SetActive(false);
@@ -56,7 +54,7 @@ public class LevelManager : MonoBehaviour
 			{
 				Debug.Log(" 0,0 Mean we want to start the app in the sequence levels");
 				//LoadThisLevel(PlayerPrefs.GetInt("BestLevel"));
-				LoadThisLevel(5);
+				LoadThisLevel(4);
 
 			}
 			else
@@ -333,7 +331,7 @@ public class LevelManager : MonoBehaviour
 	// Deal with Light
 	public IEnumerator TurnLight(bool value)
 	{
-		float minLuminosity = .5f;
+		float minLuminosity = .8f;
 		float maxLuminosity = 1.5f;
 		float duration = 1;
 

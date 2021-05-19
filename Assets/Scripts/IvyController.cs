@@ -101,13 +101,5 @@ public class IvyController : MonoBehaviour
             }
 
         }
-        else if(increaseWind == true)
-        {
-            if(windBendStrengt <= windBendStrengtMax)
-            {
-                windBendStrengt += 0.1f * Time.deltaTime;
-                rend.material.SetFloat("Vector1_A3ACDC04", windBendStrengt);
-            }
-        }
     }
 }
