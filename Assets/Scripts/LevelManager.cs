@@ -10,8 +10,6 @@ public class LevelManager : MonoBehaviour
 	[Header("Objects Settings")]
 	[SerializeField] private GameObject endLevel;
 	[SerializeField] private Light mainlight;
-	[SerializeField] private SpriteRenderer sunbean;
-
 	[SerializeField] private Transform nodesParent;
 	[SerializeField] private Sprite defaultNodeSprite;
 	[SerializeField] private Color defaultNodeColor;
@@ -94,7 +92,8 @@ public class LevelManager : MonoBehaviour
 
 	public void CameraFocus()
 	{
-		Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.2f, (levelSettings.height / 2) - 0.5f, -3);
+		//Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.2f, (levelSettings.height / 2) - 0.5f, -3);
+		Camera.main.transform.position = new Vector3((float)(levelSettings.width / 2), (levelSettings.height / 2) - 0.5f, -3);
 	}
 
 
@@ -339,25 +338,20 @@ public class LevelManager : MonoBehaviour
 
 		float counter = 0f;
 
-		float a, b, c, d;
+		float a, b;
 
-		float sunbeamMin = .05f;
-		float sunbeamMax = .1f;
 
 		if (value)
 		{
 			a = minLuminosity;
 			b = maxLuminosity;
-			c = sunbeamMin;
-			d = sunbeamMax;
 
 		}
 		else
 		{
 			a = maxLuminosity;
 			b = minLuminosity;
-			c = sunbeamMax;
-			d = sunbeamMin;
+
 			endLevel.SetActive(false);
 			Manager.GetBkgMaterial().color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
 
@@ -379,8 +373,6 @@ public class LevelManager : MonoBehaviour
 			counter += Time.deltaTime;
 
 			mainlight.intensity = Mathf.Lerp(a, b, counter / duration);
-
-			sunbean.color = new Color(1, 1, 1, Mathf.Lerp(c, d, counter / duration));
 
 			yield return null;
 		}

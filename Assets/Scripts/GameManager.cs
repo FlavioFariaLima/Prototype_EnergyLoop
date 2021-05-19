@@ -133,12 +133,14 @@ public class GameManager : MonoBehaviour
             if (!isOpen)
             {
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(originalMenuPosition, endMenuPosition, normalizedValue);
-                Camera.main.orthographicSize = Mathf.Lerp(8.5f, 7, 8.5f);
+                //Camera.main.orthographicSize = Mathf.Lerp(8.5f, 7, 8.5f);
+                Camera.main.orthographicSize = Mathf.Lerp(6.5f, 6f, 6.5f);
             }
             else
             {
                 menu.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(endMenuPosition, originalMenuPosition, normalizedValue);
-                Camera.main.orthographicSize = Mathf.Lerp(12, 6f, 12);
+                //Camera.main.orthographicSize = Mathf.Lerp(12, 6f, 12);
+                Camera.main.orthographicSize = Mathf.Lerp(10, 5f, 10);
             }
 
             yield return null;
