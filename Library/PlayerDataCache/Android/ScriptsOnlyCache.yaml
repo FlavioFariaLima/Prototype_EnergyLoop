@@ -1186,4 +1186,4 @@ ScriptsOnlyBuild:
   platform: 13
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: "C:/Users/M\xE1rio Caldas/Desktop/teste.apk"
+  playerPath: "C:/Users/M\xE1rio Caldas/Desktop/testePuzzle.apk"

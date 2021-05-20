@@ -93,7 +93,7 @@ public class LevelManager : MonoBehaviour
 	public void CameraFocus()
 	{
 		//Camera.main.transform.position = new Vector3((levelSettings.width / 2) - 0.2f, (levelSettings.height / 2) - 0.5f, -3);
-		Camera.main.transform.position = new Vector3((float)(levelSettings.width / 2), (levelSettings.height / 2) - 0.5f, -3);
+		Camera.main.transform.position = new Vector3((levelSettings.width / 2), (levelSettings.height / 2) - 0.5f, -3);
 	}
 
 
